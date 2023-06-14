@@ -19,7 +19,7 @@ To supplement and ensure consistency of the extracted information, data preparat
 Furthermore, centroids for each agricultural field were enumerated to reduce computational complexity while still capitalising on the implicit spatial distribution of parcels in the Netherlands. Finally, administrative boundaries were used to obtain regular grids covering the area of interest at a resolution of 1 km, providing a balance between capturing relative fine-grain variations in wind fields while maintaining computational efficiency. 
 </p>
 
-![]
+![Methodological_Procedure](../Methodological_Procedure.png)
 
 ### 2.3 Spatial Interpolation Methods
 <p align="justify">
