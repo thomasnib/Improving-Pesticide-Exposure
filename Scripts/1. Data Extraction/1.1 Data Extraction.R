@@ -1,5 +1,5 @@
 ################################################################################
-# Title: 1. Data Extraction
+# Title: 1.1 Data Extraction
 # Author: Thomas Nibbering
 # Date: June 14th, 2023
 # Version: V1
@@ -13,9 +13,6 @@
 library(httr)
 library(jsonlite)
 library(tidyverse)
-
-# Set Working Directory 
-setwd("/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Scripts/1. Data Extraction")
 
 ####
 # 2. Functions
