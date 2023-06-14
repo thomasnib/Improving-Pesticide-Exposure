@@ -21,3 +21,17 @@ library(tmap)
 nld <- st_read('/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Data/1. External/NL_Country_Boundary.gpkg')
 
 # Load meteorological stations
+wind_stns <- fread('/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Data/2. Pre-Processed/KNMI_Station_Wind_Directions.csv')
+
+################################################################################
+#                               2. Visualisations
+################################################################################
+####
+# 1. Study Area with Stations
+####
+# Obtain coordinates for each distinct station considered
+stns <- wind_stns %>% distinct(station_code, .keep_all = T)
+
+# Transform dataframe into sf-object
+stns <- st_as_sf(stns, coords = c('X', 'Y'), crs = 28992)
+mapview::mapview(stns)

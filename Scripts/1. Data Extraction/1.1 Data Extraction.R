@@ -83,7 +83,7 @@ for (i in stns){
 ####
 # 1. Store 
 ####
-# Store wind directions in CSV-format to 
+# Store wind directions in CSV-format for further analysis 
 write.csv(df, 
           '/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Data/1. External/KNMI_Wind_Directions.csv',
           row.names = F)

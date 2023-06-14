@@ -1,4 +1,4 @@
-﻿STN;LON(east);LAT(north);ALT(m);NAME
+﻿STN;LON;LAT;ALT;NAME
 209;4.518;52.465;0.00;IJmond
 210;4.430;52.171;-0.20;Valkenburg Zh
 215;4.437;52.141;-1.10;Voorschoten
