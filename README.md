@@ -1,7 +1,4 @@
-<p align="center">
-# Using Wind Direction Interpolation Methods to Improve Pesticide Exposure Estimates
-</p>
-
+Using Wind Direction Interpolation Methods to Improve Pesticide Exposure Estimates
 ## 1. Introduction
 <p align="justify">
 Pesticide exposure poses a notable public health concern with potential negative effects ranging from acute toxicity to neurodegenerative diseases. Therefore, assessment of pesticide exposures are critical to identify areas of high risk. Among the various factors that influence estimates of exposure, meteorological conditions are considered to play a significant role. Here, the common approach to account for these elements is to incorporate information from the nearest weather station. However, this approach may inaccurately represent the meteorological conditions at the pesticide application area. As a result, exposure estimates might be under or overestimated. Therefore, this research aimed to examine spatial interpolation methods that may improve pesticide exposure estimates using wind direction records from the Netherlands in 2017. 
