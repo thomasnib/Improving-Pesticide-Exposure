@@ -12,6 +12,8 @@ To supplement and ensure consistency of the extracted information, data preparat
 
 Furthermore, centroids for each agricultural field were enumerated to reduce computational complexity while still capitalising on the implicit spatial distribution of parcels in the Netherlands. Finally, administrative boundaries were used to obtain regular grids covering the area of interest at a resolution of 1 km, providing a balance between capturing relative fine-grain variations in wind fields while maintaining computational efficiency. 
 
-### 2.3 Spatial Interpolation Methods
+![]
 
+### 2.3 Spatial Interpolation Methods
+Four spatial interpolation methods were adopted to estimate wind fields at unknown locations, namely nearest neighbours, inverse distance weighting, universal kriging and random forests. Here, the primary objective was to obtain models capable to accurately predict wind directions at unobserved sites based on available samples. In order to compare and evaluate methods suitable to provide reliable interpolations of wind fields, measures of performance were adopted. Among the various alternatives available, the root-mean-squared error (RMSE) and mean absolute error (MAE) were considered due to their prevalent usage across topical literature and relative ease of interpretation. Moreover, leave-one-out cross validation was used to examine and appraise the performance and suitability of the proposed interpolation methods. 
 </p>
