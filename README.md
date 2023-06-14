@@ -20,6 +20,7 @@ Furthermore, centroids for each agricultural field were enumerated to reduce com
 </p>
 
 ![Methodological_Procedure](/Thesis/Figures/Methodological_Procedure.png)
+Figure 1. Schematic overview of methodological procedures. 
 
 ### 2.3 Spatial Interpolation Methods
 <p align="justify">
