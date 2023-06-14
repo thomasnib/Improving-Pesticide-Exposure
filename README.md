@@ -36,22 +36,18 @@ Four spatial interpolation methods were adopted to estimate wind fields at unkno
 ```.
 ├── README.md          
 │
-├── Data                        <- Project data (Available on request).
-│   ├── External                <- Data from third party sources (e.g. KNMI Station Coordinates).
-│   ├── Pre-Processed           <- Intermediate data that has been transformed.
-│   ├── Final                   <- The final, canonical data sets used for interpolation.
-│   └── Raw                     <- The original, immutable data dump.
-│
-├── Output                      <- Model output, model predictions or model summaries.
+├── Data                        
+│   ├── 1. External                             <- Data from third party sources (e.g. KNMI Station Coordinates).
+│   ├── 2. Pre-Processed                        <- Intermediate data that has been transformed.
+│   ├── 3. Final                                <- The final, canonical data sets used for interpolation. 
 │   
-├── Scripts                     <- R-Code Scripts. 
-│   │
-│   ├── 1. Data Extraction      <- Scripts to download or generate data. 
-│   │
-│   ├── 2. Data Processing      <- Scripts to turn raw data into features for modeling.    
-│   │
-│   └── 3. Interpolation Models <- Scripts to interpolate wind direction. 
+├── Scripts                                     <- R-Code Scripts. 
+│   ├── 1. Data Extraction                      <- Script to download or generate data. 
+│   ├── 2. Data Preparation and Enrichment      <- Script to turn raw data into features for modeling.
+│   ├── 3. Spatial Interpolation                <- Script to interpolate wind directions. 
+│   └── 4. Visualisations                       <- Script to generate graphs and figures used in reporting. 
 │
-└── Thesis                      <- Generated report as PDF (Available on request).
-    └── Figures                 <- Generated graphs and figures to be used in reporting (Available on request).
+└── Thesis
+    ├── Thesis                                  <- Generated report as PDF (Available on request).
+    └── Figures                                 <- Generated graphs and figures to be used in reporting.
 
