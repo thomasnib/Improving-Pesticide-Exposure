@@ -26,3 +26,32 @@ Figure 1. Schematic overview of methodological procedures.
 <p align="justify">
 Four spatial interpolation methods were adopted to estimate wind fields at unknown locations, namely nearest neighbours, inverse distance weighting, universal kriging and random forests. Here, the primary objective was to obtain models capable to accurately predict wind directions at unobserved sites based on available samples. In order to compare and evaluate methods suitable to provide reliable interpolations of wind fields, measures of performance were adopted. Among the various alternatives available, the root-mean-squared error (RMSE) and mean absolute error (MAE) were considered due to their prevalent usage across topical literature and relative ease of interpretation. Moreover, leave-one-out cross validation was used to examine and appraise the performance and suitability of the proposed interpolation methods. 
 </p>
+
+### 3. Results and Discussion
+
+### 4. Conclusion
+
+### Appendix I - Project Organisation
+
+```.
+├── README.md          
+│
+├── Data                        <- Project data (Available on request).
+│   ├── External                <- Data from third party sources (e.g. KNMI Station Coordinates).
+│   ├── Pre-Processed           <- Intermediate data that has been transformed.
+│   ├── Final                   <- The final, canonical data sets used for interpolation.
+│   └── Raw                     <- The original, immutable data dump.
+│
+├── Output                      <- Model output, model predictions or model summaries.
+│   
+├── Scripts                     <- R-Code Scripts. 
+│   │
+│   ├── 1. Data Extraction      <- Scripts to download or generate data. 
+│   │
+│   ├── 2. Data Processing      <- Scripts to turn raw data into features for modeling.    
+│   │
+│   └── 3. Interpolation Models <- Scripts to interpolate wind direction. 
+│
+└── Thesis                      <- Generated report as PDF (Available on request).
+    └── Figures                 <- Generated graphs and figures to be used in reporting (Available on request).
+
