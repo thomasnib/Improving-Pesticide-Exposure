@@ -21,4 +21,3 @@ library(tmap)
 nld <- st_read('/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Data/1. External/NL_Country_Boundary.gpkg')
 
 # Load meteorological stations
-stns <- 
