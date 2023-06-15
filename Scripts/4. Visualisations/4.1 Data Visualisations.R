@@ -27,11 +27,22 @@ wind_stns <- fread('/Users/thomasnibbering/Documents/Github/Improving-Pesticide-
 #                               2. Visualisations
 ################################################################################
 ####
-# 1. Study Area with Stations
+# 1. Stations
 ####
 # Obtain coordinates for each distinct station considered
 stns <- wind_stns %>% distinct(station_code, .keep_all = T)
 
-# Transform dataframe into sf-object
+# Transform into sf-object
 stns <- st_as_sf(stns, coords = c('X', 'Y'), crs = 28992)
-mapview::mapview(stns)
+
+# Visualise stations
+stations <- tm_shape(nld) + 
+            tm_polygons(col = 'darkgrey') + 
+            tm_shape(stns) + 
+            tm_dots(size = 0.3, col = '#FFCD00') +
+            tm_compass() + 
+            tm_layout(frame = F)
+
+# Store stations
+tmap_save(stations, '/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Thesis/Figures/KNMI_Stations.png')
+
