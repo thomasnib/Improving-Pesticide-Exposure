@@ -20,7 +20,7 @@ Second, exclusion criteria were being in place for measures representing calm or
 </p>
 
 ![Methodological_Procedure](/Thesis/Figures/Methodological_Procedure.png)
-Figure 1. Schematic overview of methodological procedures. 
+Figure 1. Schematic overview of methodological procedures conducted. 
 
 ### 2.3 Spatial Interpolation Methods
 <p align="justify">
