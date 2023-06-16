@@ -41,7 +41,10 @@ stations <- tm_shape(nld) +
             tm_shape(stns) + 
             tm_dots(size = 0.3, col = '#FFCD00') +
             tm_compass() + 
-            tm_layout(frame = F)
+            tm_layout(frame = F) + 
+            tm_scale_bar(width = 0.2)
+
+stations
 
 # Store stations
 tmap_save(stations, '/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Thesis/Figures/KNMI_Stations.png')

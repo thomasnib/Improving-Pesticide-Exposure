@@ -1,5 +1,5 @@
 ################################################################################
-# Title: 2.1 Data Preparation and Enrichment
+# Title: 2.1 Data Preparation and Enrichment - Wind Directions
 # Author: Thomas Nibbering
 # Date: June 14th, 2023
 # Version: V1
@@ -77,7 +77,7 @@ wind_stns <- wind_stns %>%
 #                             3. Data Storage
 ################################################################################
 ####
-# 1. Storage
+# 1. Store
 ####
 # Store wind directions with station coordinates in CSV-format
 write.csv(wind_stns, 
