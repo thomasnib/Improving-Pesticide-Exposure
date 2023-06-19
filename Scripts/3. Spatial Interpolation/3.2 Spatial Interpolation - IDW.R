@@ -1,7 +1,7 @@
 ################################################################################
-# Title: 3.1 Spatial Interpolation - Nearest Neighbours
+# Title: 3.2 Spatial Interpolation - Inverse Distance Weighting
 # Author: Thomas Nibbering
-# Date: June 16th, 2023
+# Date: June 19th, 2023
 # Version: V1
 ################################################################################
 #                               1. Initialisation
@@ -43,47 +43,67 @@ scenario <- wind %>% filter(datetime == as.POSIXct('2017-04-04 12:00:00', tz = '
 ####
 # Define circular root-mean-squared error function
 CRMSE <- function(actual, predicted){
-          # Obtain difference 
-          diff <- abs(actual - predicted)
-          # Obtain circular difference
-          circ <- ifelse(diff > 180, 360 - diff, diff)
-          # Obtain circular root-mean-squared error
-          CRMSE <- sqrt(mean(circ^2))
-          return(CRMSE)
+         # Obtain difference 
+         diff <- abs(actual - predicted)
+         # Obtain circular difference
+         circ <- ifelse(diff > 180, 360 - diff, diff)
+         # Obtain circular root-mean-squared error
+         CRMSE <- sqrt(mean(circ^2))
+         return(CRMSE)
 }
 
 # Define leave-one-out cross validation function
-loocv_nn <- function(data){
-            # Obtain folds
-            data <- mutate(data, ID = seq.int(nrow(data)))
-            # Initialise error metric
-            error <- c()
-            # Iterate over folds
-            for (i in 1:nrow(data)){
-              # Obtain train/validation set
-              train <- filter(data, !ID %in% i)
-              validate <- filter(data, ID %in% i)
-              # Model Fit
-              model <-  gstat(formula = DD ~ 1, locations = ~X+Y, data = train, nmax = 1, set=list(idp = 0))
-              # Model Predictions
-              pred <- predict(model, validate)$var1.pred
-              # Model Performance
-              cmrse <- CRMSE(validate$DD, pred)
-              # Model Output
-              error <- c(cmrse, error)
-            }
-            # Return cross validated mean circular root-mean-squared error  
-            return(mean(error))
+loocv_idw <- function(data, beta){
+             # Obtain folds
+             data <- mutate(data, ID = seq.int(nrow(data)))
+             # Initialise error metric
+             error <- c()
+             # Iterate over folds
+             for (i in 1:nrow(data)){
+               # Obtain train/validation set
+               train <- filter(data, !ID %in% i)
+               validate <- filter(data, ID %in% i)
+               # Model Fit
+               model <-  gstat(formula = DD ~ 1, locations = ~X+Y, data = train, set=list(idp = beta))
+               # Model Predictions
+               pred <- predict(model, validate)$var1.pred
+               # Model Performance
+               cmrse <- CRMSE(validate$DD, pred)
+               # Model Output
+               error <- c(cmrse, error)
+             }
+             # Return cross validated mean circular root-mean-squared error  
+             return(mean(error))
 }
 
 ################################################################################
-#                       2. Nearest Neighbour Interpolation
+#                   2. Inverse Distance Weighting Interpolation
 ################################################################################
 ####
-# 1. LOOCV Nearest Neighbours
+# 1. Hyperparameter Tuning
 ####
-# Perform leave-one-out cross validation using nearest neighbours algorithm
-loocv_nn(scenario)
+# Define IDW p-values
+powers <- seq(0.001, 4, 0.01)
+
+# Initialise metrices
+betas <- c()
+crmse <- c()
+
+# Perform IDW leave-one-out cross validation to obtain optimal value of p
+for (p in powers){
+    # Model Fit
+    idw <- loocv_idw(scenario, p)
+    # Model Performance
+    betas <- c(p, betas)
+    crmse <- c(idw, crmse)
+}
+
+# Convert model performance output into dataframe
+idw_hyp <- data.frame(betas = betas, 
+                      crmse = crmse)
+
+# Visualise 
+ggplot(idw_hyp, aes(x = betas, y = crmse)) + geom_point()
 
 ####
 # 2. Spatial Interpolation
@@ -91,21 +111,21 @@ loocv_nn(scenario)
 # Convert dataframe to sf-object
 scenario <- st_as_sf(scenario, coords = c('X', 'Y'), crs = 28992)
 
-# Define Nearest Neighbour Algorithm
-nn <- gstat(formula = DD ~ 1, data = scenario, nmax = 1, set=list(idp = 0))
+# Define IDW Algorithm
+idw <- gstat(formula = DD ~ 1, data = scenario, set = list(idp = betas[which.min(crmse)]))
 
-# Nearest Neighbour Interpolation
-pred <- predict(nn, nld) 
+# IDW Interpolation
+pred <- predict(idw, nld)
 
 ################################################################################
-#                       3. Nearest Neighbour Visualisation
+#                               3. IDW Visualisation
 ################################################################################
 ####
 # 1. Visualise
 ####
-# Visualise Nearest Neighbour Interpolation
+# Visualise IDW Interpolation
 tm_shape(pred) + 
-  tm_raster(col = 'var1.pred',
+  tm_raster('var1.pred',
             title = 'Wind Direction (in Degrees)',
             breaks = c(0, 40, 80, 120, 160, 200, 240, 280, 320, 360),
             palette = c('#5287c6', '#436fac', '#345792', '#254179',
@@ -120,8 +140,5 @@ tm_shape(pred) +
             legend.text.fontfamily = 'Times New Roman',
             legend.text.size = 0.7)
 
-####
-# 2. Store
-####
-# Store visual in png-format
+
 
