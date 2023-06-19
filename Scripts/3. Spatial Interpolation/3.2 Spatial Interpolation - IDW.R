@@ -124,21 +124,27 @@ pred <- predict(idw, nld)
 # 1. Visualise
 ####
 # Visualise IDW Interpolation
-tm_shape(pred) + 
-  tm_raster('var1.pred',
-            title = 'Wind Direction (in Degrees)',
-            breaks = c(0, 40, 80, 120, 160, 200, 240, 280, 320, 360),
-            palette = c('#5287c6', '#436fac', '#345792', '#254179',
-                        '#152c60', 
-                        '#254179', '#345792', '#436fac', '#5287c6')) + 
-  tm_compass() + 
-  tm_scale_bar(width = 0.15) + 
-  tm_layout(frame = F, 
-            legend.title.fontfamily = 'Times New Roman',
-            legend.title.fontface = 'bold',
-            legend.title.size = 1, 
-            legend.text.fontfamily = 'Times New Roman',
-            legend.text.size = 0.7)
+idw_visual <- tm_shape(pred) + 
+              tm_raster('var1.pred',
+                        title = 'Wind Direction (in Degrees)',
+                        breaks = c(0, 40, 80, 120, 160, 200, 240, 280, 320, 360),
+                        palette = c('#5287c6', '#436fac', '#345792', '#254179',
+                                    '#152c60', 
+                                    '#254179', '#345792', '#436fac', '#5287c6')) + 
+              tm_compass() + 
+              tm_scale_bar(width = 0.15) + 
+              tm_layout(frame = F, 
+                        legend.title.fontfamily = 'Times New Roman',
+                        legend.title.fontface = 'bold',
+                        legend.title.size = 1, 
+                        legend.text.fontfamily = 'Times New Roman',
+                        legend.text.size = 0.8)
+
+####
+# 2. Store
+####
+# Store visualisation in PNG-format
+tmap_save(idw_visual, '/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Thesis/Figures/IDW_Interpolation.png')
 
 
 
