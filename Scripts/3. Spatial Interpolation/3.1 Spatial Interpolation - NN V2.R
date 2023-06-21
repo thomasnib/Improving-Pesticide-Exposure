@@ -214,4 +214,6 @@ confidence$algorithm <- 'Nearest Neighbours'
 # 4. Store Output
 ####
 # Store sensitivity analysis output 
-write.csv(confidence, '/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Data/4. Output/NN_Sensitivity_Analysis.csv')
+write.csv(confidence, 
+          '/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Data/4. Output/NN_Sensitivity_Analysis.csv',
+          row.names = F)
