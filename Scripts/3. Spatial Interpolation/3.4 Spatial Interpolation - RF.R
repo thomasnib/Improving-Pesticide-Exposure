@@ -1,17 +1,18 @@
 ################################################################################
-# Title: 3.4 Spatial Interpolation - Spatial Random Forest
+# Title: 3.4 Spatial Interpolation - Random Forest V2
 # Author: Thomas Nibbering
-# Date: June 19th, 2023
-# Version: V1
-################################################################################
-#                               1. Initialisation
+# Date: June 21th, 2023
+# Version: V2
 ################################################################################
 ####
 # 1. Load Packages
 ####
-library(sf)
-library(meteo)
+# Load Packages
 library(tidyverse)
+library(sf)
+library(spatialsample)
+library(meteo)
+library(epiR)
 
 ####
 # 2. Load Data
@@ -25,7 +26,7 @@ nld <- st_read('/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Expo
 ####
 # 3. Regular Grid
 ####
-# Obtain regular grid
+# Obtain regular grid (1x1km)
 nld <- st_bbox(nld) %>%
        st_as_stars(dx = 1000, dy = 1000) %>%
        st_set_crs(28992) %>%
@@ -34,13 +35,7 @@ nld <- st_bbox(nld) %>%
        st_centroid()
 
 ####
-# 4. Scenario
-####
-# Define scenario 
-scenario <- wind %>% filter(datetime == as.POSIXct('2017-04-04 12:00:00', tz = 'UTC'))
-
-####
-# 5. Functions
+# 4. Functions
 ####
 # Define circular root-mean-squared error function
 CRMSE <- function(actual, predicted){
@@ -53,20 +48,25 @@ CRMSE <- function(actual, predicted){
          return(CRMSE)
 }
 
-# Define leave-one-out cross validation function
-loocv_rf <- function(data, trees, nn){
+# Define random forest leave-one-out cross validation function
+loocv_rf <- function(data, k, cluster_function, trees, nn){
             # Obtain folds
             data <- mutate(data, ID = seq.int(nrow(data)))
+            # Convert to sf-object
+            data <- st_as_sf(data, coords = c('X', 'Y'), crs = 28992)
+            # Obtain folds
+            folds <- spatial_clustering_cv(data, v = k, cluster_function = cluster_function)
+            # Obtain coordinates
+            data <- data %>% cbind(., st_coordinates(.)) %>% st_drop_geometry()
+            # Convert to dataframe
+            data <- as.data.frame(data)
             # Initialise error metric
-            id <- c()
-            actual <- c()
-            predi <- c()
             error <- c()
             # Iterate over folds
-            for (i in 1:nrow(data)){
-              # Obtain Train/Validation
-              train <- filter(data, !ID %in% i)
-              validate <- filter(data, ID %in% i)
+            for (i in 1:k){
+              # Obtain Train/Validation Data
+              train <- dplyr::filter(data, ID %in% folds[[1]][[i]][['in_id']])
+              validate <- dplyr::filter(data, !ID %in% folds[[1]][[i]][['in_id']])
               # Convert to sf-object
               st_train <- st_as_sf(train, coords = c('X', 'Y'), crs = 28992)
               st_validate <- st_as_sf(validate, coords = c('X', 'Y'), crs = 28992)
@@ -79,70 +79,115 @@ loocv_rf <- function(data, trees, nn){
               # Model output
               error <- c(crmse, error)
             }
+            # Return cross validated mean circular root-mean-squared error  
             return(mean(error))
 }
 
-################################################################################
-#                         2. Random Forest Interpolation
-################################################################################
-####
-# 1. Hyperparameter Tuning
-####
-# Define grid search
-grid <- expand.grid(nn = 1, # Limited to 1 given the framework of this model in the context of LOOCV
-                    trees = c(50, 100, 150, 200, 250, 300, 350, 400, 450, 500))
-
-# Initialise metrices
-nearest_n <- c()
-n_trees <- c()
-crmse <- c()
-
-# Perform random forest leave-one-out cross validation to obtain optimal value of number of trees
-for (i in 1:nrow(grid)){
-    # Model Fit 
-    rf <- loocv_rf(scenario, trees = grid[i, 2], nn = grid[i, 1])
-    # Model Performance
-    nearest_n <- c(grid[i, 1], nearest_n)
-    n_trees <- c(grid[i, 2], n_trees)
-    crmse <- c(rf, crmse)
+# Define function to obtain scenarios
+scenario_rf <- function(data, n){
+               # Define randomisation
+               set.seed(123)
+               # Define dates
+               dates <- sample(seq(as.POSIXct('2017-01-01'), as.POSIXct('2017-12-31'), by = 'hour'), n)
+               # Initialise scenario
+               scenario <- c()
+               # Iterate over dates
+               for (i in dates){
+                   # Obtain scenarios
+                   samples <- list(filter(data, datetime == c(i)))
+                   # Output scenarios
+                   scenario <- c(samples, scenario)
+                }
+               return(scenario)
 }
 
-# Convert model performance output into dataframe
-rf_hyp <- data.frame(nn = nearest_n, 
-                     trees = n_trees, 
-                     crmse = crmse)
+# Define function to perform loocv_nn function across scenarios
+sensitivity_rf <- function(data){
+                  # Initalise error metric
+                  error <- c()
+                  # Iterate over scenarios
+                  for (j in data){
+                    # Model fit
+                    crmse <- loocv_rf(j, k = 10, cluster_function = 'kmeans', trees = 150, nn = 1)
+                    # Model output
+                    error <- c(crmse, error)
+                  }
+                  return(error)
+}
+
+################################################################################
+#                       1. Random Forest Spatial Interpolation
+################################################################################
+####
+# 1. Scenario
+####
+# Define scenario
+scenario <- wind %>% filter(datetime == as.POSIXct('2017-04-04 12:00:00', tz = 'UTC'))
 
 ####
-# 2. Spatial Interpolation
+# 2. Hyperparameter Tuning
 ####
-# Convert dataframe to sf-object
+# Define search grid
+grid <- expand.grid(nn = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+                    trees = seq.int(50, 400, 50))
+
+# Initialise metrices
+trees <- c()
+nn <- c()
+error <- c()
+
+# Iterate over parameters
+for (i in 1:nrow(grid)){
+    # Model fit
+    crmse <- loocv_rf(scenario, k = 5, cluster_function = 'kmeans', trees = grid[i, 2], nn = grid[i, 1])
+    # Model performance
+    trees <- c(grid[i, 2], trees)
+    nn <- c(grid[i, 1], nn)
+    error <- c(crmse, error)
+}
+
+# Combine into dataframe
+rf_hyp <- data.frame(trees = trees,
+                     nn = nn,
+                     error = error)
+
+####
+# 3. Spatial K-fold Cross Validation
+####
+# Perform spatial K-fold cross validation 
+loocv_rf(scenario, k = 10, cluster_function = 'kmeans', trees = trees[which.min(error)], nn = nn[which.min(error)]) # Trees = 150 and nn = 3
+
+####
+# 4. Spatial Interpolation
+####
+# Convert to sf-object
 scenario <- st_as_sf(scenario, coords = c('X', 'Y'), crs = 28992)
 
-# Define random forest algorithm
-rf <- rfsi(DD ~ 1, data = scenario, n.obs = 1, num.trees = n_trees[which.min(crmse)])
+# Model fit
+rf <- rfsi(DD ~ 1, data = scenario, num.trees = 150, n.obs = 3)
 
-# Random forest interpolation
-pred <- pred.rfsi(rf, data = scenario, obs.col = 3, newdata = nld)
+# Model predictions
+pred <- pred.rfsi(rf, scenario, obs.col = 3, newdata = nld)
 
 ################################################################################
-#                           3. Random Forest Visualisation
+#                               2. Visualisation
 ################################################################################
 ####
-# 1. Sf-object
+# 1. Datatype
 ####
 # Convert to sf-object
 pred <- st_as_sf(pred, coords = c('X', 'Y'), crs = 28992)
 
 ####
-# 1. Visualise
+# 2. Visualise
 ####
-# Visualise random forest interpolation
+# Visualise interpolation
 rf_visual <- tm_shape(pred) +
              tm_dots('pred', 
                      breaks = c(0, 40, 80, 120, 160, 200, 240, 280, 320, 360),
                      palette = c('#5287c6', '#436fac', '#345792', '#254179',
-                                 '#152c60', 
-                                 '#254179', '#345792', '#436fac', '#5287c6'),
+                                  '#152c60', 
+                                  '#254179', '#345792', '#436fac', '#5287c6'),
                      legend.show = F) + 
              tm_add_legend(type = 'fill',
                            title = 'Wind Direction (in Degrees)',
@@ -167,4 +212,40 @@ rf_visual <- tm_shape(pred) +
 # Store visualisation in PNG-format
 tmap_save(rf_visual, '/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Thesis/Figures/RF_Interpolation.png')
 
+####
+# 3. Environment
+####
+# Remove objects from environment
+rm(grid, nld, pred, rf, rf_hyp, rf_visual, scenario, crmse, error, i, nn, trees)
 
+################################################################################
+#                             3. Sensitivity Analysis
+################################################################################
+####
+# 1. Scenario
+####
+# Obtain scenarios (N = 100) 
+scenario <- scenario_rf(wind, n = 100)
+
+####
+# 2. Sensitivity Analysis
+####
+# Obtain circular root-mean-squared error for each scenario
+crmse <- sensitivity_rf(scenario)
+
+####
+# 3. Confidence Interval
+####
+# Obtain confidence interval 
+confidence <- epi.conf(crmse, conf.level = 0.95, N = nrow(wind))
+
+# Add algorithm name to dataframe 
+confidence$algorithm <- 'Random Forest'
+
+####
+# 4. Store Output
+####
+# Store sensitivity analysis output 
+write.csv(confidence, 
+          '/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Data/4. Output/RF_Sensitivity_Analysis.csv',
+          row.names = F)
