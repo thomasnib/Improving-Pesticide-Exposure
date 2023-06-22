@@ -134,7 +134,7 @@ p <- seq(0.001, 4, by = 0.01)
 beta <- c()
 error <- c()
 
-# Iterate over betas
+# Iterate over parameters
 for (p in p){
     # Model fit
     crmse <- loocv_idw(scenario, k = 10, cluster_function = 'kmeans', beta = p)
