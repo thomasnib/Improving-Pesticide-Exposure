@@ -66,7 +66,7 @@ ggplot(sensitivity, aes(x = est, y = reorder(algorithm, est), xmin = lower, xmax
   geom_point(size = 3, shape = 15) + 
   geom_errorbarh(height = 0.2) + 
   xlim(c(0, 50)) + 
-  labs(title = 'Sensitivity Analysis of Spatial Interpolation Models on Hourly Wind Direction Records (N = 100)',
+  labs(title = 'Sensitivity Analysis of Interpolator Performance across Hourly Wind Direction Records (N = 100)',
        y = 'Spatial Interpolation Models', 
        x = 'Circular Root-Mean-Squared Error (CRMSE)') + 
   theme_fira() + 
