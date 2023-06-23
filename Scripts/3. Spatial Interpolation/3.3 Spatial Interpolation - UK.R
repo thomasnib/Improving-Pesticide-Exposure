@@ -9,6 +9,7 @@
 ####
 # Load Packages
 library(tidyverse)
+library(data.table)
 library(sf)
 library(spatialsample)
 library(automap)
@@ -21,7 +22,7 @@ library(gstat)
 wind <- fread('/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Data/3. Final/KNMI_Station_Wind_Directions.csv')
 
 # Load Dutch country boundary
-nld <- st_read('/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Data/1. External/NL_Country_Boundary.gpkg')
+nld <- st_read('/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Data/3. Final/NL_Country_Boundary.gpkg')
 
 ####
 # 3. Regular Grid
