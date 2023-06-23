@@ -13,7 +13,6 @@ library(sf)
 library(spatialsample)
 library(automap)
 library(gstat)
-library(epiR)
 
 ####
 # 2. Load Data
@@ -200,7 +199,7 @@ rm(m, nld, scenario, uk, uk_visual)
 # 1. Scenario
 ####
 # Obtain scenarios (N = 100) 
-scenario <- scenario_uk(wind, n = 100)
+scenario <- scenario_uk(wind, n = 383)
 
 ####
 # 2. Sensitivity Analysis
@@ -209,18 +208,15 @@ scenario <- scenario_uk(wind, n = 100)
 crmse <- sensitivity_uk(scenario)
 
 ####
-# 3. Confidence Interval
+# 3. Output
 ####
-# Obtain confidence interval 
-confidence <- epi.conf(crmse, conf.level = 0.95, N = nrow(wind))
-
-# Add algorithm name to dataframe 
-confidence$algorithm <- 'Universal Kriging'
+# Convert to dataframe
+uk_output <- data.frame(crmse_uk = crmse)
 
 ####
 # 4. Store Output
 ####
 # Store sensitivity analysis output 
-write.csv(confidence, 
+write.csv(uk_output, 
           '/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Data/4. Output/UK_Sensitivity_Analysis.csv',
           row.names = F)

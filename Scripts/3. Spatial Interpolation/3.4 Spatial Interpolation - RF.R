@@ -12,7 +12,6 @@ library(tidyverse)
 library(sf)
 library(spatialsample)
 library(meteo)
-library(epiR)
 
 ####
 # 2. Load Data
@@ -108,7 +107,7 @@ sensitivity_rf <- function(data){
                   # Iterate over scenarios
                   for (j in data){
                     # Model fit
-                    crmse <- loocv_rf(j, k = 10, cluster_function = 'kmeans', trees = 150, nn = 1)
+                    crmse <- loocv_rf(j, k = 10, cluster_function = 'kmeans', trees = 100, nn = 1)
                     # Model output
                     error <- c(crmse, error)
                   }
@@ -155,7 +154,7 @@ rf_hyp <- data.frame(trees = trees,
 # 3. Spatial K-fold Cross Validation
 ####
 # Perform spatial K-fold cross validation 
-loocv_rf(scenario, k = 10, cluster_function = 'kmeans', trees = trees[which.min(error)], nn = nn[which.min(error)]) # Trees = 150 and nn = 3
+loocv_rf(scenario, k = 10, cluster_function = 'kmeans', trees = trees[which.min(error)], nn = nn[which.min(error)]) # Trees = 100 and nn = 2
 
 ####
 # 4. Spatial Interpolation
@@ -225,7 +224,7 @@ rm(grid, nld, pred, rf, rf_hyp, rf_visual, scenario, crmse, error, i, nn, trees)
 # 1. Scenario
 ####
 # Obtain scenarios (N = 100) 
-scenario <- scenario_rf(wind, n = 100)
+scenario <- scenario_rf(wind, n = 383)
 
 ####
 # 2. Sensitivity Analysis
@@ -234,18 +233,15 @@ scenario <- scenario_rf(wind, n = 100)
 crmse <- sensitivity_rf(scenario)
 
 ####
-# 3. Confidence Interval
+# 3. Output
 ####
-# Obtain confidence interval 
-confidence <- epi.conf(crmse, conf.level = 0.95, N = nrow(wind))
-
-# Add algorithm name to dataframe 
-confidence$algorithm <- 'Random Forest'
+# Convert to dataframe
+rf_output <- data.frame(crmse_rf = crmse)
 
 ####
 # 4. Store Output
 ####
 # Store sensitivity analysis output 
-write.csv(confidence, 
+write.csv(rf_output, 
           '/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Data/4. Output/RF_Sensitivity_Analysis.csv',
           row.names = F)
