@@ -39,7 +39,8 @@ Four spatial interpolation methods were adopted to estimate wind fields at unkno
 ├── Data                        
 │   ├── 1. External                             <- Data from third party sources (e.g. KNMI Station Coordinates).
 │   ├── 2. Pre-Processed                        <- Intermediate data that has been transformed.
-│   └── 3. Final                                <- The final, canonical data sets used for interpolation. 
+│   ├── 3. Final                                <- The final, canonical data sets used for interpolation
+│   └── 3. Output                               <- Model interpolation results 
 │   
 ├── Scripts                                     <- R-Code Scripts. 
 │   ├── 1. Data Extraction                      <- Script to download or generate data. 
