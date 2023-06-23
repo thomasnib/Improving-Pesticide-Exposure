@@ -12,7 +12,6 @@ library(tidyverse)
 library(sf)
 library(spatialsample)
 library(gstat)
-library(epiR)
 
 ####
 # 2. Load Data
@@ -215,7 +214,7 @@ rm(nld, idw, idw_hyp, idw_visual, nld, pred, scenario, beta, crmse, error, p)
 # 1. Scenario
 ####
 # Obtain scenarios (N = 100) 
-scenario <- scenario_idw(wind, n = 100)
+scenario <- scenario_idw(wind, n = 383)
 
 ####
 # 2. Sensitivity Analysis
@@ -224,18 +223,15 @@ scenario <- scenario_idw(wind, n = 100)
 crmse <- sensitivity_idw(scenario)
 
 ####
-# 3. Confidence Interval
+# 3. Output
 ####
-# Obtain confidence interval 
-confidence <- epi.conf(crmse, conf.level = 0.95, N = nrow(wind))
-
-# Add algorithm name to dataframe 
-confidence$algorithm <- 'Inverse Distance Weighting'
+# Convert to dataframe
+idw_output <- data.frame(crmse_idw = crmse)
 
 ####
 # 4. Store Output
 ####
 # Store sensitivity analysis output 
-write.csv(confidence, 
+write.csv(idw_output, 
           '/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Data/4. Output/IDW_Sensitivity_Analysis.csv',
           row.names = F)
