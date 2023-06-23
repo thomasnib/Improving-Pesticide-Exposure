@@ -24,7 +24,11 @@ Figure 1. Schematic overview of methodological procedures conducted.
 
 ### 2.3 Spatial Interpolation Methods
 <p align="justify">
-Four spatial interpolation methods were adopted to estimate wind fields at unknown locations, namely nearest neighbours, inverse distance weighting, universal kriging and random forests. Here, the primary objective was to obtain models capable to accurately predict wind directions at unobserved sites based on available samples. In order to compare and evaluate methods suitable to provide reliable interpolations of wind fields, a measure of performance was adopted that considers the directional nature of the data, the circular root-mean-squared error (CRMSE). Moreover, spatial k-fold cross validation was used to examine and appraise the performance and suitability of the proposed interpolation models. Here, observations were partitioned into k disjoint folds by performing K-means clustering on the spatial coordinates, acknowledging the spatial dependencies present in the data. Finally, a sensitivity analysis was conducted that encompassed wind direction records from a collection of randomly selected hours across 2017. This facilitated a more robust comparison and evaluation of the four spatial interpolation models employed. 
+Four spatial interpolation methods were adopted to estimate wind fields at unknown locations, namely nearest neighbours, inverse distance weighting, universal kriging and random forests. Here, the primary objective was to obtain models capable to accurately predict wind directions at unobserved sites based on available samples. In order to compare and evaluate methods suitable to provide reliable interpolations of wind fields, a measure of performance was adopted that considers the directional nature of the data, the circular root-mean-squared error (CRMSE). 
+</p>
+
+<p align="justify">
+Moreover, spatial k-fold cross validation was used to examine and appraise the performance and suitability of the proposed interpolation models. Here, observations were partitioned into k disjoint folds by performing K-means clustering on the spatial coordinates, acknowledging the spatial dependencies present in the data. Finally, a sensitivity analysis was conducted that encompassed wind direction records from a collection of randomly selected hours across 2017. This facilitated a more robust comparison and evaluation of the four spatial interpolation models employed. 
 </p>
 
 ### 3. Results and Discussion
