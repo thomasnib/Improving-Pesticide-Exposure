@@ -49,8 +49,8 @@ CRMSE <- function(actual, predicted){
          return(CRMSE)
 }
 
-# Define universal kriging leave-one-out cross validation function
-loocv_uk <- function(data, k, cluster_function){
+# Define universal kriging k-fold cross validation function
+kfcv_uk <- function(data, k, cluster_function){
             # Obtain folds
             data <- mutate(data, ID = seq.int(nrow(data)))
             # Convert to sf-object
@@ -112,7 +112,7 @@ sensitivity_uk <- function(data){
                   # Iterate over scenarios
                   for (j in data){
                     # Model fit
-                    crmse <- loocv_uk(j, k = 10, cluster_function = 'kmeans')
+                    crmse <- kfcv_uk(j, k = 10, cluster_function = 'kmeans')
                     # Model output
                     error <- c(crmse, error)
                   }
@@ -132,7 +132,7 @@ scenario <- wind %>% filter(datetime == as.POSIXct('2017-04-04 12:00:00', tz = '
 # 2. Spatial K-fold Cross Validation 
 ####
 # Perform spatial K-fold cross validation 
-loocv_uk(scenario, k = 10, cluster_function = 'kmeans')
+kfcv_uk(scenario, k = 10, cluster_function = 'kmeans')
 
 ####
 # 3. Spatial Interpolation

@@ -47,8 +47,8 @@ CRMSE <- function(actual, predicted){
          return(CRMSE)
 }
 
-# Define inverse distance weighting leave-one-out cross validation function
-loocv_idw <- function(data, k, cluster_function, beta){
+# Define inverse distance weighting k-fold cross validation function
+kfcv_idw <- function(data, k, cluster_function, beta){
              # Define rownumbers
              data <- mutate(data, ID = seq.int(nrow(data)))
              # Convert to sf-object
@@ -107,7 +107,7 @@ sensitivity_idw <- function(data){
                    # Iterate over scenarios
                    for (j in data){
                        # Model fit
-                       crmse <- loocv_idw(j, k = 10, cluster_function = 'kmeans', beta = 3.441)
+                       crmse <- kfcv_idw(j, k = 10, cluster_function = 'kmeans', beta = 3.441)
                        # Model output
                        error <- c(crmse, error)
                    }
@@ -136,7 +136,7 @@ error <- c()
 # Iterate over parameters
 for (p in p){
     # Model fit
-    crmse <- loocv_idw(scenario, k = 10, cluster_function = 'kmeans', beta = p)
+    crmse <- kfcv_idw(scenario, k = 10, cluster_function = 'kmeans', beta = p)
     # Model performance
     beta <- c(p, beta)
     error <- c(crmse, error)
@@ -150,7 +150,7 @@ idw_hyp <- data.frame(beta = beta,
 # 3. Spatial K-fold Cross Validation
 ####
 # Perform spatial K-fold cross validation 
-loocv_idw(scenario, k = 10, cluster_function = 'kmeans', beta = beta[which.min(error)]) # 3.441
+kfcv_idw(scenario, k = 10, cluster_function = 'kmeans', beta = beta[which.min(error)]) # 3.441
 
 ####
 # 4. Spatial Interpolation

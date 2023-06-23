@@ -47,8 +47,8 @@ CRMSE <- function(actual, predicted){
          return(CRMSE)
 }
 
-# Define nearest neighbour leave-one-out cross validation function
-loocv_nn <- function(data, k, cluster_function){
+# Define nearest neighbour k-fold cross validation function
+kfcv_nn <- function(data, k, cluster_function){
             # Define rownumbers
             data <- mutate(data, ID = seq.int(nrow(data)))
             # Convert to sf-object
@@ -100,14 +100,14 @@ scenario_nn <- function(data, n){
                return(scenario)
 }
 
-# Define function to perform loocv_nn function across scenarios
+# Define function to perform kfcv_nn function across scenarios
 sensitivity_nn <- function(data){
                   # Initalise error metric
                   error <- c()
                   # Iterate over scenarios
                   for (j in data){
                       # Model fit
-                      crmse <- loocv_nn(j, k = 10, cluster_function = 'kmeans')
+                      crmse <- kfcv_nn(j, k = 10, cluster_function = 'kmeans')
                       # Model output
                       error <- c(crmse, error)
                   }
@@ -128,7 +128,7 @@ scenario <- wind %>% filter(datetime == as.POSIXct('2017-04-04 12:00:00', tz = '
 # 2. Spatial K-fold Cross Validation
 ####
 # Perform spatial K-fold cross validation 
-loocv_nn(scenario, k = 10, cluster_function = 'kmeans')
+kfcv_nn(scenario, k = 10, cluster_function = 'kmeans')
 
 ####
 # 3. Spatial Interpolation

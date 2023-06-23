@@ -47,8 +47,8 @@ CRMSE <- function(actual, predicted){
          return(CRMSE)
 }
 
-# Define random forest leave-one-out cross validation function
-loocv_rf <- function(data, k, cluster_function, trees, nn){
+# Define random forest k-fold cross validation function
+kfcv_rf <- function(data, k, cluster_function, trees, nn){
             # Obtain folds
             data <- mutate(data, ID = seq.int(nrow(data)))
             # Convert to sf-object
@@ -107,7 +107,7 @@ sensitivity_rf <- function(data){
                   # Iterate over scenarios
                   for (j in data){
                     # Model fit
-                    crmse <- loocv_rf(j, k = 10, cluster_function = 'kmeans', trees = 100, nn = 1)
+                    crmse <- kfcv_rf(j, k = 10, cluster_function = 'kmeans', trees = 100, nn = 1)
                     # Model output
                     error <- c(crmse, error)
                   }
@@ -138,7 +138,7 @@ error <- c()
 # Iterate over parameters
 for (i in 1:nrow(grid)){
     # Model fit
-    crmse <- loocv_rf(scenario, k = 5, cluster_function = 'kmeans', trees = grid[i, 2], nn = grid[i, 1])
+    crmse <- kfcv_rf(scenario, k = 10, cluster_function = 'kmeans', trees = grid[i, 2], nn = grid[i, 1])
     # Model performance
     trees <- c(grid[i, 2], trees)
     nn <- c(grid[i, 1], nn)
@@ -154,7 +154,7 @@ rf_hyp <- data.frame(trees = trees,
 # 3. Spatial K-fold Cross Validation
 ####
 # Perform spatial K-fold cross validation 
-loocv_rf(scenario, k = 10, cluster_function = 'kmeans', trees = trees[which.min(error)], nn = nn[which.min(error)]) # Trees = 100 and nn = 2
+kfcv_rf(scenario, k = 10, cluster_function = 'kmeans', trees = trees[which.min(error)], nn = nn[which.min(error)]) # Trees = 100 and nn = 2
 
 ####
 # 4. Spatial Interpolation
