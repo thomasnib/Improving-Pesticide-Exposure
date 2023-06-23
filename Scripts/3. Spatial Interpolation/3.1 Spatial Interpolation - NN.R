@@ -12,7 +12,6 @@ library(tidyverse)
 library(sf)
 library(spatialsample)
 library(gstat)
-library(epiR)
 
 ####
 # 2. Load Data
@@ -193,7 +192,7 @@ rm(nld, scenario, nn, nn_visual, pred)
 # 1. Scenario
 ####
 # Obtain scenarios (N = 100) 
-scenario <- scenario_nn(wind, n = 100)
+scenario <- scenario_nn(wind, n = 383)
 
 ####
 # 2. Sensitivity Analysis
@@ -202,18 +201,15 @@ scenario <- scenario_nn(wind, n = 100)
 crmse <- sensitivity_nn(scenario)
 
 ####
-# 3. Confidence Interval
+# 3. Output
 ####
-# Obtain confidence interval 
-confidence <- epi.conf(crmse, conf.level = 0.95, N = nrow(wind))
-
-# Add algorithm name to dataframe 
-confidence$algorithm <- 'Nearest Neighbours'
+# Convert to dataframe
+nn_output <- data.frame(crmse_nn = crmse)
 
 ####
 # 4. Store Output
 ####
 # Store sensitivity analysis output 
-write.csv(confidence, 
+write.csv(nn_output, 
           '/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Data/4. Output/NN_Sensitivity_Analysis.csv',
           row.names = F)
