@@ -43,8 +43,8 @@ Moreover, spatial k-fold cross validation was used to examine and appraise the p
 ├── Data                        
 │   ├── 1. External                             <- Data from third party sources (e.g. KNMI Station Coordinates).
 │   ├── 2. Pre-Processed                        <- Intermediate data that has been transformed.
-│   ├── 3. Final                                <- The final, canonical data sets used for interpolation
-│   └── 3. Output                               <- Model interpolation results 
+│   ├── 3. Final                                <- The final, canonical data sets used for interpolation.
+│   └── 3. Output                               <- Sensitivity analysis of model performance. 
 │   
 ├── Scripts                                     <- R-Code Scripts. 
 │   ├── 1. Data Extraction                      <- Script to download or generate data. 
