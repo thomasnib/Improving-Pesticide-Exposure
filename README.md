@@ -63,7 +63,11 @@ The results revealed that the adopted spatial interpolation approaches applied t
 │   ├── 1. Data Extraction                      <- Script to download or generate data. 
 │   ├── 2. Data Preparation and Enrichment      <- Script to turn raw data into features for modeling.
 │   ├── 3. Spatial Interpolation                <- Script to interpolate wind directions. 
-│   └── 4. Visualisations                       <- Script to generate graphs and figures used in reporting. 
+│   └── 4. Visualisations                       <- Script to generate graphs and figures used in reporting.
+│
+├── Poster
+│   ├── Thesis                                  <- Generated poster as PDF (Available on request).
+│   └── References                              <- References related to poster. 
 │
 └── Thesis
     ├── Thesis                                  <- Generated report as PDF (Available on request).
