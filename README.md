@@ -32,6 +32,17 @@ Moreover, spatial k-fold cross validation was used to examine and appraise the p
 </p>
 
 ### 3. Results and Discussion
+<p align="justify">
+The results showed that the employed spatial interpolation methods applied to wind direction records produced distinct visual patterns. In this context, a visual comparison of interpolations on a randomly selected hour revealed that the inverse distance weighting and universal kriging approaches resulted in a more continuous field while the nearest neighbour method provided abrupt transitions across space. Interpolations obtained from the random forest model exhibited an intermediate behaviour. Overall, these findings align with findings from previous studies. 
+</p>
+
+<p align="justify">
+Furthermore, the sensitivity analysis revealed that the proposed models performed relatively similar, as presented in Figure 2. 
+This might be explained by the limited variability observed in hourly wind field measures. In this context, inverse distance weighting and universal kriging outperformed the baseline wind field interpolations of the nearest neighbour approach. This may be attributed to the positive spatial autocorrelation present in the data. In contrast, the random forest algorithm was found to exhibit an inferior performance compared to the other methods, mainly due to the limited number of observations available at each randomly selected hour. 
+</p>
+
+![Model_Comparison](/Thesis/Figures/Sensitivity_Analysis.png)
+Figure 1. Mean out-of-sample circular root-mean-squared error of each spatial interpolator across 382 randomly selected hours. 
 
 ### 4. Conclusion
 
