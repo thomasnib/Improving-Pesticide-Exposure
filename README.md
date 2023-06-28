@@ -32,7 +32,11 @@ Moreover, spatial k-fold cross validation was used to examine and appraise the p
 </p>
 
 ### 3. Results and Discussion
+<p align="justify">
+The results showed that the employed spatial interpolation methods applied to wind direction records produced distinct visual patterns. In this context, a visual comparison of interpolations on a randomly selected hour revealed that the inverse distance weighting and universal kriging approaches resulted in a more continuous field while the nearest neighbour method provided abrupt transitions across space. Interpolations obtained from the random forest model exhibited an intermediate behaviour. Overall, these findings align with findings from previous studies. 
 
+
+</p>
 ### 4. Conclusion
 
 ### Appendix I - Project Organisation
