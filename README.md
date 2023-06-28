@@ -1,7 +1,7 @@
 # Using Wind Direction Interpolation Methods to Improve Pesticide Exposure Estimates
 ## 1. Introduction
 <p align="justify">
-Pesticide exposure poses a notable public health concern with potential negative effects ranging from acute toxicity to neurodegenerative diseases. Therefore, assessment of pesticide exposures are critical to identify areas of high risk. Among the various factors that influence estimates of exposure, meteorological conditions are considered to play a significant role. Here, the common approach to account for these elements is to incorporate information from the nearest weather station. However, this approach may inaccurately represent the meteorological conditions at the pesticide application area. As a result, exposure estimates might be under or overestimated. Therefore, this research aimed to examine spatial interpolation methods that may improve pesticide exposure estimates using wind direction records from the Netherlands in 2017. 
+Pesticide exposure poses a notable public health concern with potential negative effects ranging from acute toxicity to neurodegenerative diseases. Therefore, assessment of pesticide exposures are critical to identify areas of high risk. Among the various factors that influence estimates of exposure, meteorological conditions are considered to play a significant role. Here, the common approach to account for these elements is to incorporate information from the nearest weather station. However, this approach may inaccurately represent the meteorological conditions at the pesticide application area. As a result, exposure estimates might be under or overestimated. Therefore, this research aimed to evaluate and compare spatial interpolation methods that may improve pesticide exposure estimates using wind direction records from the Netherlands in 2017. 
 </p>
 
 ## 2. Methods
@@ -37,14 +37,16 @@ The results showed that the employed spatial interpolation methods applied to wi
 </p>
 
 <p align="justify">
-Furthermore, the sensitivity analysis revealed that the proposed models performed relatively similar, as presented in Figure 2. 
-This might be explained by the limited variability observed in hourly wind field measures. In this context, inverse distance weighting and universal kriging outperformed the baseline wind field interpolations of the nearest neighbour approach. This may be attributed to the positive spatial autocorrelation present in the data. In contrast, the random forest algorithm was found to exhibit an inferior performance compared to the other methods, mainly due to the limited number of observations available at each randomly selected hour. 
+Furthermore, the sensitivity analysis revealed that the proposed models performed relatively similar, as presented in Figure 2. This might be explained by the limited variability observed in hourly wind field measures. In this context, inverse distance weighting and universal kriging outperformed the baseline wind field interpolations of the nearest neighbour approach. This may be attributed to the positive spatial autocorrelation present in the data. In contrast, the random forest algorithm was found to exhibit an inferior performance compared to the other methods, mainly due to the limited number of observations available at each randomly selected hour. 
 </p>
 
 ![Model_Comparison](/Thesis/Figures/Sensitivity_Analysis.png)
 Figure 1. Mean out-of-sample circular root-mean-squared error of each spatial interpolator across 382 randomly selected hours. 
 
 ### 4. Conclusion
+<p align="justify">
+The results revealed that the adopted spatial interpolation approaches applied to wind direction records produced distinct visual patterns. Nonetheless, the performance among the four models was relatively similar. The main theoretical explanation for this finding was the limited variety observed in hourly wind field measures. Moreover, inverse distance weighting demonstrated the lowest median out-of-sample error for interpolating wind fields among the four models. This was mainly found to be related to the positive spatial autocorrelation present in the data, resulting in a competitive advantage for this distance-based algorithm.
+</p>
 
 ### Appendix I - Project Organisation
 
