@@ -11,6 +11,7 @@
 library(tidyverse)
 library(data.table)
 library(sf)
+library(stars)
 library(spatialsample)
 library(automap)
 library(gstat)
@@ -174,7 +175,8 @@ uk_visual <- tm_shape(uk) +
                                       '200 to 240', '240 to 280', '280 to 320', '320 to 360')) + 
              tm_compass() + 
              tm_scale_bar(width = 0.15) + 
-             tm_layout(frame = F, 
+             tm_layout(title = '(C)',
+                       frame = F, 
                        legend.title.fontfamily = 'Times New Roman',
                        legend.title.fontface = 'bold',
                        legend.title.size = 1, 
