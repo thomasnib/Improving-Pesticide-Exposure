@@ -117,4 +117,6 @@ sen_visual <- ggplot(sensitivity, aes(x = CRMSE, y = reorder(algorithm, CRMSE, m
 
 # Store sensitivity analysis 
 ggsave('/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Thesis/Figures/Sensitivity_Analysis.png', 
-       sen_visual)
+       sen_visual,
+       height = 3,
+       bg = 'white')
