@@ -57,19 +57,19 @@ The results revealed that the adopted spatial interpolation approaches applied t
 │   ├── 1. External                             <- Data from third party sources (e.g. KNMI Station Coordinates).
 │   ├── 2. Pre-Processed                        <- Intermediate data that has been transformed.
 │   ├── 3. Final                                <- The final, canonical data sets used for interpolation.
-│   └── 3. Output                               <- Sensitivity analysis of model performance. 
+│   └── 3. Output                               <- Sensitivity analysis results. 
 │   
 ├── Scripts                                     <- R-Code Scripts. 
-│   ├── 1. Data Extraction                      <- Script to download or generate data. 
+│   ├── 1. Data Extraction                      <- Script to download data. 
 │   ├── 2. Data Preparation and Enrichment      <- Script to turn raw data into features for modeling.
 │   ├── 3. Spatial Interpolation                <- Script to interpolate wind directions. 
 │   └── 4. Visualisations                       <- Script to generate graphs and figures used in reporting.
 │
 ├── Poster
-│   ├── Thesis                                  <- Generated poster as PDF (Available on request).
-│   └── References                              <- References related to poster. 
+│   ├── Poster                                  <- Generated poster as PDF (Available on request).
+│   └── References                              <- References related to the poster. 
 │
 └── Thesis
     ├── Thesis                                  <- Generated report as PDF (Available on request).
-    └── Figures                                 <- Generated graphs and figures to be used in reporting.
+    └── Figures                                 <- Generated graphs and figures used in reporting.
 
