@@ -1,5 +1,5 @@
 ################################################################################
-# Title: 3.1 Spatial Interpolation - Nearest Neighbours V2
+# Title: 3.1 Spatial Interpolation - Nearest Neighbours
 # Author: Thomas Nibbering
 # Date: June 21th, 2023
 # Version: V2
@@ -14,6 +14,7 @@ library(sf)
 library(stars)
 library(spatialsample)
 library(gstat)
+library(tmap)
 
 ####
 # 2. Load Data
@@ -168,7 +169,7 @@ nn_visual <- tm_shape(pred) +
                                      '200 to 240', '240 to 280', '280 to 320', '320 to 360')) + 
              tm_compass() + 
              tm_scale_bar(width = 0.15) + 
-             tm_layout(title = '(A)',
+             tm_layout(title = '(B)',
                        frame = F, 
                        legend.title.fontfamily = 'Times New Roman',
                        legend.title.fontface = 'bold',
@@ -194,7 +195,7 @@ rm(nld, scenario, nn, nn_visual, pred)
 ####
 # 1. Scenario
 ####
-# Obtain scenarios (N = 100) 
+# Obtain scenarios (N = 383) 
 scenario <- scenario_nn(wind, n = 383)
 
 ####

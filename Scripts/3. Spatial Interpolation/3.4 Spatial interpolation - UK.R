@@ -1,5 +1,5 @@
 ################################################################################
-# Title: 3.4 Spatial Interpolation - Random Forest V2
+# Title: 3.3 Spatial Interpolation - Universal Kriging
 # Author: Thomas Nibbering
 # Date: June 21th, 2023
 # Version: V2
@@ -13,7 +13,9 @@ library(data.table)
 library(sf)
 library(stars)
 library(spatialsample)
-library(meteo)
+library(automap)
+library(gstat)
+library(tmap)
 
 ####
 # 2. Load Data
@@ -33,7 +35,8 @@ nld <- st_bbox(nld) %>%
        st_set_crs(28992) %>%
        st_crop(nld) %>%
        st_as_sf() %>%
-       st_centroid()
+       st_centroid() %>%
+       cbind(., st_coordinates(.))
 
 ####
 # 4. Functions
@@ -49,8 +52,8 @@ CRMSE <- function(actual, predicted){
          return(CRMSE)
 }
 
-# Define random forest k-fold cross validation function
-kfcv_rf <- function(data, k, cluster_function, trees, nn){
+# Define universal kriging k-fold cross validation function
+kfcv_uk <- function(data, k, cluster_function){
             # Obtain folds
             data <- mutate(data, ID = seq.int(nrow(data)))
             # Convert to sf-object
@@ -71,12 +74,15 @@ kfcv_rf <- function(data, k, cluster_function, trees, nn){
               # Convert to sf-object
               st_train <- st_as_sf(train, coords = c('X', 'Y'), crs = 28992)
               st_validate <- st_as_sf(validate, coords = c('X', 'Y'), crs = 28992)
-              # Model Fit
-              rf <- rfsi(DD ~ 1, data = st_train, num.trees = trees, n.obs = nn)
-              # Model Predictions
-              pred <- pred.rfsi(rf, data = st_train, obs.col = 3, newdata = st_validate)
-              # Model Performance
-              crmse <- CRMSE(st_validate$DD, pred$pred)
+              # Obtain Coordinates
+              st_train <- st_train %>% cbind(., st_coordinates(.))
+              st_validate <- st_validate %>% cbind(., st_coordinates(.))
+              # Semi-variogram fit
+              m <- autofitVariogram(formula = DD ~ X + Y, input_data = st_train)
+              # Model fit
+              uk <- krige(formula = DD ~ X + Y, st_train, st_validate, model = m$var_model)$var1.pred
+              # Model performance
+              crmse <- CRMSE(st_validate$DD, uk)
               # Model output
               error <- c(crmse, error)
             }
@@ -85,7 +91,7 @@ kfcv_rf <- function(data, k, cluster_function, trees, nn){
 }
 
 # Define function to obtain scenarios
-scenario_rf <- function(data, n){
+scenario_uk <- function(data, n){
                # Define randomisation
                set.seed(123)
                # Define dates
@@ -98,18 +104,18 @@ scenario_rf <- function(data, n){
                    samples <- list(filter(data, datetime == c(i)))
                    # Output scenarios
                    scenario <- c(samples, scenario)
-                }
+               }
                return(scenario)
 }
 
 # Define function to perform loocv_nn function across scenarios
-sensitivity_rf <- function(data){
+sensitivity_uk <- function(data){
                   # Initalise error metric
                   error <- c()
                   # Iterate over scenarios
                   for (j in data){
                     # Model fit
-                    crmse <- kfcv_rf(j, k = 10, cluster_function = 'kmeans', trees = 100, nn = 1)
+                    crmse <- kfcv_uk(j, k = 10, cluster_function = 'kmeans')
                     # Model output
                     error <- c(crmse, error)
                   }
@@ -117,7 +123,7 @@ sensitivity_rf <- function(data){
 }
 
 ################################################################################
-#                       1. Random Forest Spatial Interpolation
+#                   1. Universal Kriging Spatial Interpolation
 ################################################################################
 ####
 # 1. Scenario
@@ -126,69 +132,39 @@ sensitivity_rf <- function(data){
 scenario <- wind %>% filter(datetime == as.POSIXct('2017-04-04 12:00:00', tz = 'UTC'))
 
 ####
-# 2. Hyperparameter Tuning
-####
-# Define search grid
-grid <- expand.grid(nn = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
-                    trees = seq.int(50, 400, 50))
-
-# Initialise metrices
-trees <- c()
-nn <- c()
-error <- c()
-
-# Iterate over parameters
-for (i in 1:nrow(grid)){
-    # Model fit
-    crmse <- kfcv_rf(scenario, k = 10, cluster_function = 'kmeans', trees = grid[i, 2], nn = grid[i, 1])
-    # Model performance
-    trees <- c(grid[i, 2], trees)
-    nn <- c(grid[i, 1], nn)
-    error <- c(crmse, error)
-}
-
-# Combine into dataframe
-rf_hyp <- data.frame(trees = trees,
-                     nn = nn,
-                     error = error)
-
-####
-# 3. Spatial K-fold Cross Validation
+# 2. Spatial K-fold Cross Validation 
 ####
 # Perform spatial K-fold cross validation 
-kfcv_rf(scenario, k = 10, cluster_function = 'kmeans', trees = trees[which.min(error)], nn = nn[which.min(error)]) # Trees = 100 and nn = 2
+kfcv_uk(scenario, k = 10, cluster_function = 'kmeans')
 
 ####
-# 4. Spatial Interpolation
+# 3. Spatial Interpolation
 ####
 # Convert to sf-object
 scenario <- st_as_sf(scenario, coords = c('X', 'Y'), crs = 28992)
 
-# Model fit
-rf <- rfsi(DD ~ 1, data = scenario, num.trees = 150, n.obs = 3)
+# Obtain coordinates
+scenario <- scenario %>% cbind(., st_coordinates(.))
 
-# Model predictions
-pred <- pred.rfsi(rf, scenario, obs.col = 3, newdata = nld)
+# Obtain semi-variogram
+m <- autofitVariogram(DD ~ X + Y, scenario)
+
+# Model fit
+uk <- krige(formula = DD ~ X + Y, scenario, nld, model = m$var_model)
 
 ################################################################################
 #                               2. Visualisation
 ################################################################################
 ####
-# 1. Datatype
-####
-# Convert to sf-object
-pred <- st_as_sf(pred, coords = c('X', 'Y'), crs = 28992)
-
-####
-# 2. Visualise
+# 1. Visualise
 ####
 # Visualise interpolation
-rf_visual <- tm_shape(pred) +
-             tm_dots('pred', 
+uk_visual <- tm_shape(uk) + 
+             tm_dots(col = 'var1.pred',
                      breaks = c(0, 40, 80, 120, 160, 200, 240, 280, 320, 360),
                      palette = c('#5287c6', '#436fac', '#345792', '#254179',
-                                  '#152c60', 
-                                  '#254179', '#345792', '#436fac', '#5287c6'),
+                                 '#152c60', 
+                                 '#254179', '#345792', '#436fac', '#5287c6'),
                      legend.show = F) + 
              tm_add_legend(type = 'fill',
                            title = 'Wind Direction (in Degrees)',
@@ -206,19 +182,19 @@ rf_visual <- tm_shape(pred) +
                        legend.title.fontface = 'bold',
                        legend.title.size = 1, 
                        legend.text.fontfamily = 'Times New Roman',
-                       legend.text.size = 0.8) 
+                       legend.text.size = 0.8)
 
 ####
 # 2. Store
 ####
 # Store visualisation in PNG-format
-tmap_save(rf_visual, '/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Thesis/Figures/RF_Interpolation.png')
+tmap_save(uk_visual, '/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Thesis/Figures/UK_Interpolation.png')
 
 ####
 # 3. Environment
 ####
 # Remove objects from environment
-rm(grid, nld, pred, rf, rf_hyp, rf_visual, scenario, crmse, error, i, nn, trees)
+rm(m, nld, scenario, uk, uk_visual)
 
 ################################################################################
 #                             3. Sensitivity Analysis
@@ -226,25 +202,25 @@ rm(grid, nld, pred, rf, rf_hyp, rf_visual, scenario, crmse, error, i, nn, trees)
 ####
 # 1. Scenario
 ####
-# Obtain scenarios (N = 100) 
-scenario <- scenario_rf(wind, n = 383)
+# Obtain scenarios (N = 383) 
+scenario <- scenario_uk(wind, n = 383)
 
 ####
 # 2. Sensitivity Analysis
 ####
 # Obtain circular root-mean-squared error for each scenario
-crmse <- sensitivity_rf(scenario)
+crmse <- sensitivity_uk(scenario)
 
 ####
 # 3. Output
 ####
 # Convert to dataframe
-rf_output <- data.frame(crmse_rf = crmse)
+uk_output <- data.frame(crmse_uk = crmse)
 
 ####
 # 4. Store Output
 ####
 # Store sensitivity analysis output 
-write.csv(rf_output, 
-          '/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Data/4. Output/RF_Sensitivity_Analysis.csv',
+write.csv(uk_output, 
+          '/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Data/4. Output/UK_Sensitivity_Analysis.csv',
           row.names = F)
