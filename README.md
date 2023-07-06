@@ -24,7 +24,7 @@ Figure 1. Schematic overview of methodological procedures conducted.
 
 ### 2.3 Spatial Interpolation Methods
 <p align="justify">
-Four spatial interpolation methods were adopted to estimate wind fields at unknown locations, namely nearest neighbours, inverse distance weighting, universal kriging and random forests. Here, the primary objective was to obtain models capable to accurately predict wind directions at unobserved sites based on available samples. In order to compare and evaluate methods suitable to provide reliable interpolations of wind fields, a measure of performance was adopted that considers the directional nature of the data, the circular root-mean-squared error (CRMSE). 
+Four spatial interpolation methods were adopted to estimate wind fields at unknown locations, namely a naïve interpolator, nearest neighbours, inverse distance weighting, universal kriging and random forests. Here, the primary objective was to obtain models capable to accurately predict wind directions at unobserved sites based on available samples. In order to compare and evaluate methods suitable to provide reliable interpolations of wind fields, a measure of performance was adopted that considers the directional nature of the data, the circular root-mean-squared error (CRMSE). 
 </p>
 
 <p align="justify">
@@ -33,11 +33,11 @@ Moreover, spatial k-fold cross validation was used to examine and appraise the p
 
 ### 3. Results and Discussion
 <p align="justify">
-The results showed that the employed spatial interpolation methods applied to wind direction records produced distinct visual patterns. In this context, a visual comparison of interpolations on a randomly selected hour revealed that the inverse distance weighting and universal kriging approaches resulted in a more continuous field while the nearest neighbour method provided abrupt transitions across space. Interpolations obtained from the random forest model exhibited an intermediate behaviour. Overall, these findings align with findings from previous studies. 
+The results showed that the employed spatial interpolation methods applied to wind direction records produced distinct visual patterns. In this context, a visual comparison of interpolations on a randomly selected hour revealed that the inverse distance weighting and universal kriging approaches resulted in a more continuous field while the nearest neighbour method provided abrupt transitions across space. Interpolations obtained from the random forest model exhibited an intermediate behaviour. Conversely, the naïve approach provided a singular estimate across the study area, disregarding the spatial variation of the wind direction records. Overall, these findings align with findings from previous studies. 
 </p>
 
 <p align="justify">
-Furthermore, the sensitivity analysis revealed that the proposed models performed relatively similar, as presented in Figure 2. This might be explained by the limited variability observed in hourly wind field measures. In this context, inverse distance weighting and universal kriging outperformed the baseline wind field interpolations of the nearest neighbour approach. This may be attributed to the positive spatial autocorrelation present in the data. In contrast, the random forest algorithm was found to exhibit an inferior performance compared to the other methods, mainly due to the limited number of observations available at each randomly selected hour. 
+Furthermore, the sensitivity analysis revealed that the proposed models performed relatively similar, as presented in Figure 2. This might be explained by the limited variability observed in hourly wind field measures. In this context, all models outperformed the baseline wind field interpolations of the naïve approach. Notably, inverse distance weighting and universal kriging exhibited superior performance compared to the nearest neighbour approach that is commonly used in pesticide dispersion simulations. In contrast, the random forest algorithm was found to perform slightly worse compared to the other interpolators, only outperforming the naïve method. 
 </p>
 
 ![Model_Comparison](/Thesis/Figures/Sensitivity_Analysis.png)
@@ -45,7 +45,7 @@ Figure 1. Mean out-of-sample circular root-mean-squared error of each spatial in
 
 ### 4. Conclusion
 <p align="justify">
-The results revealed that the adopted spatial interpolation approaches applied to wind direction records produced distinct visual patterns. Nonetheless, the performance among the four models was relatively similar. The main theoretical explanation for this finding was the limited variety observed in hourly wind field measures. Moreover, inverse distance weighting demonstrated the lowest median out-of-sample error for interpolating wind fields among the four models. This was mainly found to be related to the positive spatial autocorrelation present in the data, resulting in a competitive advantage for this distance-based algorithm.
+The results revealed that the adopted spatial interpolation approaches applied to wind direction records produced distinct visual patterns. Nonetheless, the performance among the four models was relatively similar. The main theoretical explanation for this finding was the limited variety observed in hourly wind field measures. Moreover, inverse distance weighting demonstrated the lowest median out-of-sample error for interpolating wind fields among the five models, suggesting that the adoption of this method in pesticide drift simulations might provide a more valid representation of wind directions at the application areas compared to the nearest neighbour approach that is often employed. In doing so, this might improve the accuracy of pesticide exposure estiamtes obtained from these simulations. 
 </p>
 
 ### Appendix I - Project Organisation
