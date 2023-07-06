@@ -99,7 +99,7 @@ rm(stns, stations)
 # 1. Sensitivity Analysis
 ####
 # Define algorithm associated with each analysis
-sen_m$algorithm <- "Mode Interpolation"
+sen_m$algorithm <- "Naïve Interpolation"
 sen_nn$algorithm <- 'Nearest Neighbour'
 sen_idw$algorithm <- 'Inverse Distance Weighting'
 sen_uk$algorithm <- 'Universal Kriging'
@@ -115,7 +115,10 @@ sen_visual <- ggplot(sensitivity, aes(x = CRMSE, y = reorder(algorithm, CRMSE, m
                    y = '') + 
               theme_fira() + 
               theme(text = element_text(family = 'Times New Roman'),
-                    axis.title.x = element_text(hjust = 0.5, face = 'bold'))
+                    axis.title.x = element_text(hjust = 0.5, face = 'bold'),
+                    axis.text.y = element_text(face = 'bold'))
+
+sen_visual
 
 # Store sensitivity analysis 
 ggsave('/Users/thomasnibbering/Documents/Github/Improving-Pesticide-Exposure/Thesis/Figures/Sensitivity_Analysis.png', 
