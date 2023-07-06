@@ -1,5 +1,5 @@
 ################################################################################
-# Title: 3.1 Spatial Interpolation - Mode
+# Title: 3.1 Spatial Interpolation - Naive Interpolator
 # Author: Thomas Nibbering
 # Date: June 21th, 2023
 # Version: V2
