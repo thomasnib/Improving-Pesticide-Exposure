@@ -19,7 +19,7 @@ To supplement and ensure consistency of the extracted information, data preparat
 Second, exclusion criteria were being in place for measures representing calm or highly changeable wind directions. The main rationale behind this exclusion was that these conditions were not considered significant or accurate contributes to simulate pesticide drift given the setup of the gaussian plume models, i.e. exposures are estimated based on the assumption that sources of drift are upwind, making it challenging to simulate dispersion in stagnant or unstable wind conditions. Furthermore, centroids for each agricultural field were enumerated to reduce computational complexity while still capitalising on the implicit spatial distribution of parcels in the Netherlands. Finally, administrative boundaries were used to obtain regular grids covering the area of interest at a resolution of 1 km, providing a balance between capturing relative fine-grain variations in wind fields while maintaining computational efficiency. 
 </p>
 
-![Methodological_Procedure](/Thesis/Figures/Methodological_Procedure.png)
+![Methodological_Procedure](/Thesis/Figures/Methodological_Procedures.png)
 Figure 1. Schematic overview of methodological procedures conducted. 
 
 ### 2.3 Spatial Interpolation Methods
