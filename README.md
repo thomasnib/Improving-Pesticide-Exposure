@@ -54,7 +54,7 @@ The results revealed that the adopted spatial interpolation approaches applied t
 ├── README.md          
 │
 ├── Data                        
-│   ├── 1. External                             <- Data from third party sources (e.g. KNMI Station Coordinates).
+│   ├── 1. External                             <- Data from third party sources (e.g. KNMI station coordinates).
 │   ├── 2. Pre-Processed                        <- Intermediate data that has been transformed.
 │   ├── 3. Final                                <- The final, canonical data sets used for interpolation.
 │   └── 3. Output                               <- Sensitivity analysis results. 
