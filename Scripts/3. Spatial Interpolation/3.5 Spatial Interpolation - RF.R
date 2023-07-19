@@ -110,7 +110,7 @@ sensitivity_rf <- function(data){
                   # Iterate over scenarios
                   for (j in data){
                     # Model fit
-                    crmse <- kfcv_rf(j, k = 10, cluster_function = 'kmeans', trees = 100, nn = 1)
+                    crmse <- kfcv_rf(j, k = 10, cluster_function = 'kmeans', trees = 150, nn = 3)
                     # Model output
                     error <- c(crmse, error)
                   }
@@ -157,7 +157,7 @@ rf_hyp <- data.frame(trees = trees,
 # 3. Spatial K-fold Cross Validation
 ####
 # Perform spatial K-fold cross validation 
-kfcv_rf(scenario, k = 10, cluster_function = 'kmeans', trees = trees[which.min(error)], nn = nn[which.min(error)]) # Trees = 100 and nn = 2
+kfcv_rf(scenario, k = 10, cluster_function = 'kmeans', trees = trees[which.min(error)], nn = nn[which.min(error)]) # Trees = 150 and nn = 3
 
 ####
 # 4. Spatial Interpolation
